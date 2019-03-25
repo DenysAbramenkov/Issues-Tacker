@@ -1,0 +1,88 @@
+﻿@model Issues_Tracker.Models.IssuePrioritiesList
+
+
+@{
+    ViewBag.Title = "List of Issues for the Project";
+}
+
+    <h2>List of Issues for the Project</h2>
+
+    <form>
+        <div class="form-group">
+            <p>
+                Project name: <input type="text" name="projectName" method="get">
+                <br />
+            </p>
+            <p>
+                Filter by Priority: @Html.DropDownList("priority", Model.Priorityes, "All")
+                <br />
+            </p>
+            <p>
+                <input class="btn btn-outline-primary" asp-controller="Issue" asp-action="GetAllIssuesByProjectName" type="submit" value="Filter" />
+                <br />
+            </p>
+        </div>
+    </form>
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Issues[0].Number)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issues[0].Summary)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issues[0].Descripton)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issues[0].Priority)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issues[0].Project)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issues[0].State)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issues[0].User)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.Issues)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Summary)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Descripton)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Priority.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Project.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.State.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Name)
+                </td>
+                <td>
+                   @Ajax.ActionLink("Delete", "DeleteIssue", new { id = item.Id }, new AjaxOptions { HttpMethod = "GET"}, new { @class = "btn btn-default" })
+                    @Ajax.ActionLink("Edit", "DeleteIssue", new { id = item.Id }, new AjaxOptions { HttpMethod = "GET" }, new { @class = "btn btn-default" })
+                </td>
+            </tr>
+        }
+      
+    </table>
+    <button type="button" class="btn btn-outline-primary" asp-page-handler="Add"
+            asp-route-id="@Model">
+        Add new Issue
+    </button>
