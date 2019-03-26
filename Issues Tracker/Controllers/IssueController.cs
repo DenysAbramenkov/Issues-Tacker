@@ -42,16 +42,16 @@ namespace Issues_Tracker.Controllers
             {
                 Issue issueToUpdate = db.Issues.FirstOrDefault(x => x.Id == issue.Id) ;
                 issueToUpdate.Number = issue.Number;
-                issueToUpdate.Priority = db.Priorities.FirstOrDefault(x => x.Name == issue.Priority.Name);
-                issueToUpdate.PriorityId = issueToUpdate.Priority.Id;
-                issueToUpdate.State = db.States.FirstOrDefault(x => x.Name == issue.State.Name);
-                issueToUpdate.StateId = issueToUpdate.State.Id;
-                issueToUpdate.Project = db.Projects.FirstOrDefault(x => x.Name == issue.Project.Name);
-                issueToUpdate.ProjectId = issueToUpdate.Project.Id;
-                issueToUpdate.User = db.Users.FirstOrDefault(x => x.Name == issue.User.Name);
-                issueToUpdate.AssigneeId = issueToUpdate.User.Id;
-                issueToUpdate.Summary = issue.Summary;
+                issueToUpdate.PriorityId = issue.PriorityId;
+                issueToUpdate.ProjectId = issue.ProjectId;
+                issueToUpdate.StateId = issue.StateId;
+                issueToUpdate.AssigneeId = issue.AssigneeId;
                 issueToUpdate.Descripton = issue.Descripton;
+                issueToUpdate.Summary = issue.Summary;
+                issueToUpdate.Project = db.Projects.FirstOrDefault(x => x.Id == issue.ProjectId);
+                issueToUpdate.State = db.States.FirstOrDefault(x => x.Id == issue.StateId);
+                issueToUpdate.Priority = db.Priorities.FirstOrDefault(x => x.Id == issue.PriorityId);
+                issueToUpdate.User = db.Users.FirstOrDefault(x => x.Id == issue.AssigneeId);
                 db.SaveChanges();
             }
 
@@ -59,16 +59,17 @@ namespace Issues_Tracker.Controllers
             {
                 Issue issueToCreate = new Issue();
                 issueToCreate.Number = issue.Number;
-                issueToCreate.Priority = db.Priorities.FirstOrDefault(x => x.Name == issue.Priority.Name);
-                issueToCreate.PriorityId = issueToCreate.Priority.Id;
-                issueToCreate.State = db.States.FirstOrDefault(x => x.Name == issue.State.Name);
-                issueToCreate.StateId = issueToCreate.State.Id;
-                issueToCreate.Project = db.Projects.FirstOrDefault(x => x.Name == issue.Project.Name);
-                issueToCreate.ProjectId = issueToCreate.Project.Id;
-                issueToCreate.User = db.Users.FirstOrDefault(x => x.Name == issue.User.Name);
-                issueToCreate.AssigneeId = issueToCreate.User.Id;
+                issueToCreate.PriorityId = issue.PriorityId;
+                issueToCreate.ProjectId = issue.ProjectId;
+                issueToCreate.StateId = issue.StateId;
+                issueToCreate.AssigneeId = issue.AssigneeId;
                 issueToCreate.Summary = issue.Summary;
                 issueToCreate.Descripton = issue.Descripton;
+                issueToCreate.Project = db.Projects.FirstOrDefault(x => x.Id == issue.ProjectId);
+                issueToCreate.State = db.States.FirstOrDefault(x => x.Id == issue.StateId);
+                issueToCreate.Priority = db.Priorities.FirstOrDefault(x => x.Id == issue.PriorityId);
+                issueToCreate.User = db.Users.FirstOrDefault(x => x.Id == issue.AssigneeId);
+                db.Issues.Add(issueToCreate);
                 db.SaveChanges();
 
             }
@@ -78,12 +79,17 @@ namespace Issues_Tracker.Controllers
         public ActionResult AddEditIssue(int issueId)
         {
             IssueView issueView = new IssueView
-            {
-                States = new SelectList(db.States.Select(x => x.Name)),
-                Asignee = new SelectList(db.Users.Select(x => x.Name)),
-                Projects = new SelectList(db.Projects.Select(x => x.Name)),
-                Priorityes = new SelectList(db.Priorities.Select(x => x.Name))
+            { 
+                States = new SelectList(db.States, "Id", "Name"),
+                Asignee = new SelectList(db.Users, "Id", "Name"),
+                Projects = new SelectList(db.Projects, "Id", "Name"),
+                Priorityes = new SelectList(db.Priorities, "Id", "Name")
             };
+
+            ViewBag.States = new SelectList(db.States, "Id", "Name");
+            ViewBag.Asignee = db.Users.Select(x => x.Name);
+            ViewBag.Projects = db.Projects.Select(x => x.Name);
+            ViewBag.Priorityes = db.Priorities.Select(x => x.Name);
 
             if (issueId > 0)
             {
