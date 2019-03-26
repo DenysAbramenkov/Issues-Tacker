@@ -18,7 +18,7 @@
                 <br />
             </p>
             <p>
-                <input class="btn btn-outline-primary" asp-controller="Issue" asp-action="GetAllIssuesByProjectName" type="submit" value="Filter" />
+                <input class="btn btn-outline-info" asp-controller="Issue" asp-action="Index" type="submit" value="Filter" />
                 <br />
             </p>
         </div>
@@ -75,14 +75,46 @@
                     @Html.DisplayFor(modelItem => item.User.Name)
                 </td>
                 <td>
-                   @Ajax.ActionLink("Delete", "DeleteIssue", new { id = item.Id }, new AjaxOptions { HttpMethod = "GET"}, new { @class = "btn btn-default" })
-                    @Ajax.ActionLink("Edit", "DeleteIssue", new { id = item.Id }, new AjaxOptions { HttpMethod = "GET" }, new { @class = "btn btn-default" })
+                   <a href="#" class="btn btn-info" onclick="AddEditIssue(@item.Id)">Edit</a> 
+                   @*<a href="#" class="btn btn-danger" onclick="DeleteIssue(@item.Id)">Delete</a>*@ 
                 </td>
             </tr>
         }
-      
-    </table>
-    <button type="button" class="btn btn-outline-primary" asp-page-handler="Add"
-            asp-route-id="@Model">
-        Add new Issue
+  </table>
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="deletelLabel" data-show="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteLabel">Are you sure?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="AddEditModalbody">
+                     
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <button type="button" onclick="AddEditIssue(0)" class="btn btn-success">
+        Add
     </button>
+
+<script>
+    var AddEditIssue = function (issId) {
+        $.ajax({
+            url: "/Issue/AddEditIssue",
+            type: "GET",
+            data: { issueId: issId },
+            success: function (result) {
+                $('#AddEditModalbody').html(result);
+                $('#editModal').modal('show');
+            },
+            error: function() {
+            alert("There is some problem in the service!")
+        }
+        });
+    }
+</script>

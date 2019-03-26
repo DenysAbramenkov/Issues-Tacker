@@ -9,8 +9,11 @@ namespace Issues_Tracker.Models
     public class IssuePrioritiesList
     {
         public List<Issue> Issues;
+
         public SelectList Priorityes;
+
         public string IssuePriority { get; set; }
+
         public string projectName { get; set; }
     }
 }

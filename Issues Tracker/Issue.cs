@@ -27,5 +27,12 @@ namespace Issues_Tracker
         public virtual Project Project { get; set; }
         public virtual State State { get; set; }
         public virtual User User { get; set; }
+
+        public Issue()
+        {
+            Number = 0;
+            Summary = "";
+            Descripton = "";
+        }
     }
 }
