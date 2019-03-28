@@ -1,42 +1,76 @@
 ﻿@model Issues_Tracker.Models.IssueView
 
-<div>
     <form id="editForm">    
 
         @Html.HiddenFor(model => model.Issue.Id)
 
-        <p class="font-weight-bold">Project</p>
-        @Html.DropDownListFor(model => Model.Issue.ProjectId , Model.Projects, new { @class = "form-control" })
-        <br />
+        <div class="container">
 
-
-            <p class="font-weight-bold">Number</p>
-            @Html.EditorFor(model => model.Issue.Number, new { htmlAttributes = new { @class = "form-control" } })
+            <div class="row">
+                <div class="col-md-2">
+                    <a href="#" id="btnSubmit" class="btn btn-primary">Save</a>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-control">
+                        <option>New</option>
+                        <option>Update</option>
+                    </select>
+                </div>
+            </div>
             <br />
+            <div class="row">
+                <div class="col-md-9">
+                    <p class="font-weight-bold">Project</p>
+                    @Html.DropDownListFor(model => Model.Issue.ProjectId, Model.Projects, new { @class = "form-control", @style = "max-width:none" })
+                </div>
+                <div class="col-md-3">
+                    <p class="font-weight-bold">Number</p>
+                    @Html.EditorFor(model => model.Issue.Number, new { htmlAttributes = new { @class = "form-control", @style = "max-width:none", @readonly = "readonly" } })
+                </div>
+            </div>
 
-            <p class="font-weight-bold">Summary</p>
-            @Html.EditorFor(model => model.Issue.Summary, new { htmlAttributes = new { @class = "form-control" } })
-            <br />
+                
+                <br />
 
-            <p class="font-weight-bold">Descriprion</p>
-            @Html.EditorFor(model => model.Issue.Descripton, new { htmlAttributes = new { @class = "form-control" } })
-            <br />
+                <p class="font-weight-bold">Summary</p>
+                @Html.EditorFor(model => model.Issue.Summary, new { htmlAttributes = new { @class = "form-control", @style = "max-width:none" } })
+                <br />
 
-            <p class="font-weight-bold">State</p>
-            @Html.DropDownListFor(model => model.Issue.StateId, Model.States, new { @class = "form-control" })
-            <br />
+                <p class="font-weight-bold">Descriprion</p>
+                @Html.EditorFor(model => model.Issue.Descripton, new { htmlAttributes = new { @class = "form-control", @style = "max-width:none" } })
+                <br />
 
-            <p class="font-weight-bold">Priorite</p>
-            @Html.DropDownListFor(model => model.Issue.PriorityId, Model.Priorityes, new { @class = "form-control" })
-            <br />
 
-            <p class="font-weight-bold">Asignee</p>
-            @Html.DropDownListFor(model => model.Issue.AssigneeId, Model.Asignee, new { @class = "form-control" })
-            <br />
+            <div class="container">
 
-            <a href="#" id="btnSubmit" class="btn btn-success btn-block">Save</a>
+                <div class="row">
+                    <div class="col-md-4">
+                        <p class="font-weight-bold">State</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="font-weight-bold">Priorite</p>
+                    </div>
+
+                    <div class="col-md-4">
+                        <p class="font-weight-bold">Asignee</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                       @Html.DropDownListFor(model => model.Issue.StateId, Model.States, new { @class = "form-control", @style = "max-width:none" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.DropDownListFor(model => model.Issue.PriorityId, Model.Priorityes, new { @class = "form-control", @style = "max-width:none" })
+                    </div>
+
+                    <div class="col-md-4">
+                        @Html.DropDownListFor(model => model.Issue.AssigneeId, Model.Asignee, new { @class = "form-control", @style = "max-width:none" })
+                    </div>
+                </div>
+
+
+            </div>
 </form>
-</div>
 
 
 <script>
