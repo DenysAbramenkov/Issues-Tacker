@@ -10,9 +10,8 @@
     <div class="row">
         <form role="form">
             <div class="form-group">
-                @Html.DropDownList("projectName", ViewBag.Projects as SelectList, new { @class = "form-control", @style = "max-width:none" })
+                @Html.DropDownList("projectName", ViewBag.Projects as SelectList, "Select project", new { @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
                 <br />
-                <input class="btn btn-primary"  style="margin-left:20px" asp-controller="Issue" asp-action="Index" type="submit" value="Filter" />
             </div>
             </form>
     </div>
@@ -37,10 +36,10 @@
 
     <div class="row">
         <div  class="col-md-4">
-            <div id="boardColumn" class="col-md-12">
+            <div id="boardColumn" style="min-height:500px" title="1" class="col-md-12">
                 @foreach (var item in Model.Issues.Where(i => i.State.Id == 1).ToList())
                 {
-                    <div id="issueCard" class="card">
+                    <div id="@item.Id" title="@item.StateId" class="card">
                         <div class="card-body">
                             <p id="boardSummary"><span>@Html.DisplayNameFor(model => item.Summary):</span>  @Html.DisplayFor(model => item.Summary)  </p>
                             <p id="boardPriority"><span>@Html.DisplayNameFor(model => item.Priority):</span>  @Html.DisplayFor(model => item.Priority.Name)</p>
@@ -51,11 +50,11 @@
             </div>
          </div>
 
-        <div class="col-md-4">
-            <div id="boardColumn" class="col-md-12">
+        <div  class="col-md-4">
+            <div id="boardColumn" style="min-height:500px" title="2" class="col-md-12">
                 @foreach (Issue item in Model.Issues.Where(i => i.State.Id == 2))
             {
-                    <div id="issueCard" class="card">
+                    <div id="@item.Id" title="@item.StateId" class="card">
                         <div class="card-body">
                             <p id="boardSummary"><span>@Html.DisplayNameFor(model => item.Summary):</span>  @Html.DisplayFor(model => item.Summary)  </p>
                             <p id="boardPriority"><span>@Html.DisplayNameFor(model => item.Priority):</span>  @Html.DisplayFor(model => item.Priority.Name)</p>
@@ -67,10 +66,10 @@
             
         </div>
         <div class="col-md-4">
-            <div id="boardColumn" class="col-md-12">
+            <div id="boardColumn" style="min-height:500px" title="3" class="col-md-12">
                 @foreach (var item in Model.Issues.Where(i => i.State.Id == 3).ToList())
                 {
-                    <div id="issueCard" class="card">
+                    <div id="@item.Id" title="@item.StateId" class="card">
                         <div class="card-body">
                             <p id="boardSummary"><span>@Html.DisplayNameFor(model => item.Summary):</span>  @Html.DisplayFor(model => item.Summary)  </p>
                             <p id="boardPriority"><span>@Html.DisplayNameFor(model => item.Priority):</span>  @Html.DisplayFor(model => item.Priority.Name)</p>
@@ -90,19 +89,29 @@
 <script>
    
     $(function () {
-        $(".card").draggable(
-            {
-            });
-        $("#BoardColumn").droppable(
+        $("#boardColumn, #boardColumn, #boardColumn").sortable({
+            revert: true,
+            connectWith: "#boardColumn, #boardColumn, #boardColumn",
+            receive: function (e, ui) {
+                var id = ui.item.context.id;
+                var newState = $(this).attr("title");
+                Drop(+id, +newState);
+            },
+            beforeStop: function (event, ui) {
+              
+            }
+        });
+        var Drop = function(id, stateId)
         {
-                
-            accept: '.card',
-            onDrop:function(e,source){     
-            alert("Massage");
+            $.ajax({
+                type: "POST",
+                url: "/Board/UpdateState",
+                data: { issueId: id, stateId: stateId },
+                success: function () {
+                    window.location.href = "/Board/Index";
+                }
+
+            })
         }
-    })
-    })
-       
-               
-           
+    });        
 </script>

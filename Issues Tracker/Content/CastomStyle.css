@@ -9,8 +9,7 @@
 #boardColumn
 {
     border:solid;
-    padding:0px;
-    padding-bottom:50px;
+    min-height: 500px;
     border-radius:15px 15px;
     border-width:1px;
     border-color:#c5cccc;

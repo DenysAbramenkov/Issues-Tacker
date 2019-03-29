@@ -22,16 +22,26 @@ namespace Issues_Tracker.Controllers
             List<Issue> issues = db.Issues.ToList();
             if (!string.IsNullOrEmpty(projectName))
             {
-                issues = issues.Where(issue => issue.Project.Name.Contains(projectName)).ToList();
+                if (projectName != "All")
+                {
+                    issues = issues.Where(issue => issue.Project.Name.Contains(projectName)).ToList();
+                }
             }
-
+            
             if (!string.IsNullOrEmpty(priority))
             {
-                issues = issues.Where(x => x.Priority.Name.Contains(priority)).ToList();
+                if (priority != "All")
+                {
+                    issues = issues.Where(x => x.Priority.Name.Contains(priority)).ToList();
+                } 
             }
+            List<string> Projects = new List<string>(db.Projects.Select(p => p.Name));
+            Projects.Add("All");
+            ViewBag.Projects = new SelectList(Projects);
             IssuePrioritiesList viewIssueList = new IssuePrioritiesList { Issues = issues };
-
-            viewIssueList.Priorityes = new SelectList(priorityQuery.ToList());
+            List<string> Priorityes = new List<string>(db.Priorities.Select(p => p.Name));
+            Priorityes.Add("All");
+            viewIssueList.Priorityes = new  SelectList(Priorityes);
             return View(viewIssueList);
         }
 

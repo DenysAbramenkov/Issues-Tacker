@@ -26,16 +26,15 @@
             </div>
             <br/>
             <div class="row">
+                    <div class="col-md-6">
+                        @Html.DropDownList("projectName", ViewBag.Projects as SelectList, new { @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
+                    </div>
                 <div  class="col-md-6">
-                    <input style="max-width:none" type="text" class="form-control" name="projectName" method="get">
+                    @Html.DropDownList("priority", Model.Priorityes, new { @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
                 </div>
-                <div  class="col-md-6">
-                    @Html.DropDownList("priority", Model.Priorityes, "All", new { @class = "form-control", @style = "max-width:none" })
-                </div>
-            </div>
+                   
             <br />
-            <input class="btn btn-primary" width="300" asp-controller="Issue" asp-action="Index" type="submit" value="Filter" />
-            <br />
+       
         </div>
     </div>
 </form>
