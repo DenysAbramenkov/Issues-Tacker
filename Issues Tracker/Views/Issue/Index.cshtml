@@ -2,10 +2,11 @@
 
 
 @{
-    ViewBag.Title = "List of Issues for the Project";
+    ViewBag.Title = "Choose project name";
 }
 
-<h2>List of Issues for the Project</h2>
+<br/>
+<h3>List of issues:</h3>
 
 <form role="form">
     <div class="form-group">
@@ -25,18 +26,16 @@
                 </div>
             </div>
             <br/>
-            <div class="row">
+            <div style="margin-bottom:40px" class="row">
                     <div class="col-md-6">
-                        @Html.DropDownList("projectName", ViewBag.Projects as SelectList, new { @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
+                        @Html.DropDownList("projectName", ViewBag.Projects as SelectList, new {@id="project", @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
                     </div>
                 <div  class="col-md-6">
-                    @Html.DropDownList("priority", Model.Priorityes, new { @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
+                    @Html.DropDownList("priority", Model.Priorityes, new {@id = "priority", @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
                 </div>
-                   
-            <br />
-       
         </div>
     </div>
+        </div>
 </form>
 
 <div class="table-responsive">
@@ -99,42 +98,44 @@
     </table>
 
 </div>
-
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="deletelLabel" data-show="true">
-        <div class="modal-dialog" role="document">
+                                                                                                            
+    <div class="modal fade" id="editModal" tabindex="-1"  role="dialog" aria-labelledby="deletelLabel" data-show="true">                                      
+        <div class="modal-dialog" style="width:700px" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="modalHeaderlabe">Add or delete Issue</h4>
+                    <h4 class="modal-title" id="modalHeaderlabe">Add or update Issue</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-
+                                                      
                 <div class="modal-body" id="AddEditModalbody">
                 </div>
             </div>
         </div>
     </div>
     <div>
-        <button style="float: right; margin-right:70px; margin-top:15px;" type="button" onclick="AddEditIssue(0)" class="btn btn-primary">
+        <button style="float: right; margin-right:20px; margin-top:15px;" type="button" onclick="AddEditIssue(0)" class="btn btn-primary">
             Create
         </button>
     </div>
 
     <script>
+     
         var AddEditIssue = function (issId) {
-            $.ajax({
-                url: "/Issue/AddEditIssue",
-                type: "GET",
-                data: { issueId: issId },
-                success: function (result) {
-                    $('#AddEditModalbody').html(result);
-                    $('#editModal').modal('show');
-                },
-                error: function () {
-                    alert("There is some problem in the service!")
-                }
-            });
-        }
+          
+                $.ajax({
+                    url: "/Issue/AddEditIssue",
+                    type: "GET",
+                    data: { issueId: issId },
+                    success: function (result) {
+                        $('#AddEditModalbody').html(result);
+                        $('#editModal').modal('show');
+                    },
+                    error: function () {
+                        alert("There is some problem in the service!")
+                    }
+                });
+            }
     </script>
 

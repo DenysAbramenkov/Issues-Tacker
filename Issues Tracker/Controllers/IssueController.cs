@@ -67,46 +67,46 @@ namespace Issues_Tracker.Controllers
             {
                 issueView.Issue = db.Issues.FirstOrDefault((issue => issue.Id == issueId));
             }
+            else
+            {
+                issueView.Issue = new Issue();
+            }
+           
 
             return PartialView("AddEditIssue", issueView);
         }
 
         private void GetUpdatedOrNewIssue(Issue issue)
         {
-                Issue issueToUpdate = new Issue();
-                if (issue.Id > 0)
-                {
-                    issueToUpdate = db.Issues.FirstOrDefault(x => x.Id == issue.Id);
-                    issueToUpdate.Number = issue.Number;
-                    issueToUpdate.PriorityId = issue.PriorityId;
-                    issueToUpdate.ProjectId = issue.ProjectId;
-                    issueToUpdate.StateId = issue.StateId;
-                    issueToUpdate.AssigneeId = issue.AssigneeId;
-                    issueToUpdate.Descripton = issue.Descripton;
-                    issueToUpdate.Summary = issue.Summary;
-                    issueToUpdate.Project = db.Projects.FirstOrDefault(x => x.Id == issue.ProjectId);
-                    issueToUpdate.State = db.States.FirstOrDefault(x => x.Id == issue.StateId);
-                    issueToUpdate.Priority = db.Priorities.FirstOrDefault(x => x.Id == issue.PriorityId);
-                    issueToUpdate.User = db.Users.FirstOrDefault(x => x.Id == issue.AssigneeId);
-                    db.SaveChanges();
-                }
+            Issue issueToUpdate = new Issue();
+            if (issue.Id > 0)
+            {
+                issueToUpdate = db.Issues.FirstOrDefault(x => x.Id == issue.Id);
+                issueToUpdate.Number = issue.Number;
+                issueToUpdate.PriorityId = issue.PriorityId;
+                issueToUpdate.ProjectId = issue.ProjectId;
+                issueToUpdate.StateId = issue.StateId;
+                issueToUpdate.AssigneeId = issue.AssigneeId;
+                issueToUpdate.Descripton = issue.Descripton;
+                issueToUpdate.Summary = issue.Summary;
+                issueToUpdate.Project = db.Projects.FirstOrDefault(x => x.Id == issue.ProjectId);
+                issueToUpdate.State = db.States.FirstOrDefault(x => x.Id == issue.StateId);
+                issueToUpdate.Priority = db.Priorities.FirstOrDefault(x => x.Id == issue.PriorityId);
+                issueToUpdate.User = db.Users.FirstOrDefault(x => x.Id == issue.AssigneeId);
+                db.SaveChanges();
+            }
 
-                else
-                {
-                    issueToUpdate.Number = GetNewNumber();
-                    issueToUpdate.PriorityId = issue.PriorityId;
-                    issueToUpdate.ProjectId = issue.ProjectId;
-                    issueToUpdate.StateId = issue.StateId;
-                    issueToUpdate.AssigneeId = issue.AssigneeId;
-                    issueToUpdate.Summary = issue.Summary;
-                    issueToUpdate.Descripton = issue.Descripton;
-                    issueToUpdate.Project = db.Projects.FirstOrDefault(x => x.Id == issue.ProjectId);
-                    issueToUpdate.State = db.States.FirstOrDefault(x => x.Id == issue.StateId);
-                    issueToUpdate.Priority = db.Priorities.FirstOrDefault(x => x.Id == issue.PriorityId);
-                    issueToUpdate.User = db.Users.FirstOrDefault(x => x.Id == issue.AssigneeId);
-                    db.Issues.Add(issueToUpdate);
-                    db.SaveChanges();
-                }         
+            else
+            {
+                issueToUpdate = issue;
+                issueToUpdate.Number = GetNewNumber();
+                issueToUpdate.Project = db.Projects.FirstOrDefault(x => x.Id == issue.ProjectId);
+                issueToUpdate.State = db.States.FirstOrDefault(x => x.Id == issue.StateId);
+                issueToUpdate.Priority = db.Priorities.FirstOrDefault(x => x.Id == issue.PriorityId);
+                issueToUpdate.User = db.Users.FirstOrDefault(x => x.Id == issue.AssigneeId);
+                db.Issues.Add(issueToUpdate);
+                db.SaveChanges();
+            }         
         }
 
         private int GetNewNumber()

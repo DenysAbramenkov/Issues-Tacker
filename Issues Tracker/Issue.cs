@@ -9,8 +9,6 @@
 
 namespace Issues_Tracker
 {
-    using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     public partial class Issue
@@ -22,8 +20,10 @@ namespace Issues_Tracker
 
         public int Number { get; set; }
 
+        [Required(ErrorMessage = "Input Summary")]
         public string Summary { get; set; }
 
+        [Required(ErrorMessage = "Input Description")]
         public string Descripton { get; set; }
 
         public int PriorityId { get; set; }

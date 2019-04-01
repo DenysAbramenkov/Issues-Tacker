@@ -369,7 +369,6 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Issue\Index.cshtml" />
-    <Content Include="Views\Issue\DeleteIssue.cshtml" />
     <Content Include="Views\Issue\AddEditIssue.cshtml" />
     <Content Include="Views\Board\Index.cshtml" />
   </ItemGroup>
