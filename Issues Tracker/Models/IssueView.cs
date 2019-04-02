@@ -6,14 +6,16 @@ using System.Web.Mvc;
 
 namespace Issues_Tracker.Models
 {
-    public class IssuePrioritiesList
+    public class IssueView
     {
-        public List<Issue> Issues;
+        public Issue Issue;
 
         public SelectList Priorityes;
 
-        public string IssuePriority { get; set; }
+        public SelectList Projects;
 
-        public string projectName { get; set; }
+        public SelectList States;
+
+        public SelectList Asignee;
     }
 }

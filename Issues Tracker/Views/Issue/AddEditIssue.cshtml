@@ -1,0 +1,112 @@
+﻿@model Issues_Tracker.Models.IssueView
+
+<form id="editForm">
+
+    @Html.HiddenFor(model => model.Issue.Id)
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-1" style="margin-right:15px">
+                <a href="#" id="btnSubmit" class="btn btn-primary">Save</a>
+            </div>
+            <div class="col-md-3">
+                @Html.DropDownListFor(model => model.Issue.StateId, Model.States, new { @id = "stateChoose", @class = "form-control", @style = "max-width:none" })
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-9">
+                <p class="font-weight-bold">Project</p>
+                @Html.DropDownListFor(model => Model.Issue.ProjectId, Model.Projects, new { @id = "projectChoose", @class = "form-control", @style = "max-width:none" })
+            </div>
+            <div class="col-md-3">
+                <p class="font-weight-bold">Number</p>
+                @Html.EditorFor(model => model.Issue.Number, new { htmlAttributes = new { @class = "form-control", @style = "max-width:none", @readonly = "readonly" } })
+            </div>
+        </div>
+        <br />
+
+        <p class="font-weight-bold">Summary</p>
+        @Html.EditorFor(model => model.Issue.Summary, new { htmlAttributes = new { @class = "form-control", @style = "max-width:none" } })
+        @Html.ValidationMessageFor(model => model.Issue.Summary, "", new { @class = "text-danger" })
+        <br />
+
+        <p class="font-weight-bold">Descriprion</p>
+        @Html.TextAreaFor(model => model.Issue.Descripton, new { @class = "form-control", @style = "max-width:inherit", @rows = "5" })
+        @Html.ValidationMessageFor(model => model.Issue.Descripton, "", new { @class = "text-danger" })
+        <br />
+
+        <div class="row">
+            <div class="col-md-6">
+                <p class="font-weight-bold">Priorite</p>
+            </div>
+
+            <div class="col-md-6">
+                <p class="font-weight-bold">Asignee</p>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-md-6">
+                @Html.DropDownListFor(model => model.Issue.PriorityId, Model.Priorityes, new { @id = "priorityChoose", @class = "form-control", @style = "max-width:none" })
+            </div>
+
+            <div class="col-md-6">
+                @Html.DropDownListFor(model => model.Issue.AssigneeId, Model.Asignee, new { @id = "assigneeChoose", @class = "form-control", @style = "max-width:none" })
+            </div>
+        </div>
+
+    </div>
+</form>
+
+
+
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        debugger;
+        var check = '@(Model.Issue.Priority == null ? true : false)';
+        if (check === 'False') {
+        $('#priorityChoose').val("@Model.Issue.PriorityId").prop('selected', true);
+        $('#assigneeChoose').val("@Model.Issue.AssigneeId").prop('selected', true);
+        $('#stateChoose').val("@Model.Issue.StateId").prop('selected', true);
+        $('#projectChoose').val("@Model.Issue.ProjectId").prop('selected', true);
+        $('#projectChoose').attr("readonly", true)
+        }
+
+        else {
+            $('#stateChoose').val("1").prop('selected', true);
+            $('#stateChoose').attr("readonly", true);
+            $('#projectChoose').attr("readonly", false);
+        }
+    });
+
+
+
+    $("#btnSubmit").click(function () {
+
+        if (!$("#editForm").valid()) {
+
+            return false;
+        }
+        else {
+            var issueData = $("#editForm").serialize();
+
+            $.ajax({
+
+                type: "POST",
+                url: "/Issue/Index",
+                data: issueData,
+                success: function () {
+                    $("#editModal").modal("hide");
+                    window.location.href = "/Issue/Index";
+                }
+
+            });
+        }
+    });
+
+</script>

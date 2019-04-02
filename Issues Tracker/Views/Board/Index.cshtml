@@ -1,0 +1,116 @@
+﻿@model Issues_Tracker.Project
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<br/>
+<h3 style="margin-left:15px;">Choose project name:</h3>
+
+<div class="container">
+    <div class="row">
+        <form role="form">
+            <div  style="margin-left:20px; margin-top:15px; margin-right:10px;"class="form-group">
+                @Html.DropDownList("projectName", ViewBag.Projects as SelectList, "Select project", new { @id = "project", @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
+            </div>
+            </form>
+    </div>
+</div>
+
+
+<div style="position:page; height:100%" class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Backlog</h3>
+            <br />
+        </div>
+        <div class="col-md-4">
+            <h3>In Progress</h3>
+            <br/>
+        </div>
+        <div class="col-md-4">
+            <h3>Done</h3>
+            <br />
+        </div>
+    </div>
+
+    <div class="row">
+        <div  class="col-md-4">
+            <div data-state= "1" id="boardColumn" class="col-md-12">
+                @foreach (var item in Model.Issues.Where(i => i.State.Id == 1).ToList())
+                {
+                    <div id="@item.Id" class="card">
+                        <div class="card-body">
+                            <p id="boardSummary"><span>@Html.DisplayNameFor(model => item.Summary):</span>  @Html.DisplayFor(model => item.Summary)  </p>
+                            <p id="boardPriority"><span>@Html.DisplayNameFor(model => item.Priority):</span>  @Html.DisplayFor(model => item.Priority.Name)</p>
+                            <p id="boardAssignee"><span>@Html.DisplayNameFor(model => item.User):</span> @Html.DisplayFor(model => item.User.Name) </p>
+                        </div>
+                    </div>
+                }
+            </div>
+         </div>
+
+        <div  class="col-md-4">
+            <div data-state= "2" id="boardColumn" class="col-md-12">
+                @foreach (Issue item in Model.Issues.Where(i => i.State.Id == 2))
+            {
+                    <div id="@item.Id" class="card">
+                        <div class="card-body">
+                            <p id="boardSummary"><span>@Html.DisplayNameFor(model => item.Summary):</span>  @Html.DisplayFor(model => item.Summary)  </p>
+                            <p id="boardPriority"><span>@Html.DisplayNameFor(model => item.Priority):</span>  @Html.DisplayFor(model => item.Priority.Name)</p>
+                            <p id="boardAssignee"><span>@Html.DisplayNameFor(model => item.User):</span> @Html.DisplayFor(model => item.User.Name) </p>
+                        </div>
+                    </div>
+                }
+            </div>
+            
+        </div>
+        <div class="col-md-4">
+            <div data-state= "3" id="boardColumn" class="col-md-12">
+                @foreach (var item in Model.Issues.Where(i => i.State.Id == 3).ToList())
+                {
+                    <div id="@item.Id" class="card">
+                        <div class="card-body">
+                            <p id="boardSummary"><span>@Html.DisplayNameFor(model => item.Summary):</span>  @Html.DisplayFor(model => item.Summary)  </p>
+                            <p id="boardPriority"><span>@Html.DisplayNameFor(model => item.Priority):</span>  @Html.DisplayFor(model => item.Priority.Name)</p>
+                            <p id="boardAssignee"><span>@Html.DisplayNameFor(model => item.User):</span> @Html.DisplayFor(model => item.User.Name) </p>
+                        </div>
+                    </div>
+                }
+            </div>
+            </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.min.css"/>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+<script>
+
+    $(function () {
+        $("#boardColumn, #boardColumn, #boardColumn").sortable({
+            revert: true,
+            connectWith: "#boardColumn, #boardColumn, #boardColumn",
+            receive: function (e, ui) {
+                var id = ui.item.context.id;
+                var newState = $(this).data("state");
+                Drop(+id, +newState);
+            },
+            beforeStop: function (event, ui) {
+
+            }
+        });
+        var Drop = function(id, stateId)
+        {
+            $.ajax({
+                type: "POST",
+                url: "/Board/UpdateState",
+                data: { issueId: id, stateId: stateId },
+                success: function () {
+                    window.location.href = "/Board/Index";
+                }
+            })
+        }
+    });
+</script>

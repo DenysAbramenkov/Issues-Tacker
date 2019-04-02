@@ -1,0 +1,51 @@
+﻿.card 
+{
+    border-radius:15px 15px;
+    margin:1px;
+    padding:0px;
+}
+
+#boardColumn
+{
+    border:solid;
+    padding:0px;
+    padding-bottom:50px;
+    border-radius:10px 10px;
+    border-width:1px;
+    border-color:#c5cccc;
+    min-height:500px;
+}
+
+.card-body
+{
+    margin:0px;
+    margin-left:0px; 
+    border-radius:10px 10px;
+    padding:0px;
+    border:thick;
+    border-width:1px;
+    border-color:#ebf6f6;
+    background-color:#cdcdcd
+}
+
+.card-body span
+{
+    color:#3f7de0;
+}
+
+#boardSummary
+{
+    padding-top:10px; 
+    margin-left:10px
+}
+
+#boardPriority
+{
+    padding-left:10px
+}
+
+#boardAssignee
+{
+    padding-left:10px;
+    padding-bottom:5px
+} 
