@@ -28,10 +28,24 @@
             <br/>
             <div style="margin-bottom:40px" class="row">
                     <div class="col-md-6">
-                        @Html.DropDownList("projectName", ViewBag.Projects as SelectList, new {@id="project", @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
+                        @if (Model.Priorityes != null)
+                        {
+                            @Html.DropDownList("projectName", ViewBag.Projects as SelectList, new { @id = "project", @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
+                        }
+                        else
+                        {
+                            @Html.DropDownList("projectName", Enumerable.Empty<SelectListItem>(), "Select",  new { @id = "project", @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
+                        }
                     </div>
                 <div  class="col-md-6">
-                    @Html.DropDownList("priority", Model.Priorityes, new {@id = "priority", @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
+                        @if (Model.Priorityes != null)
+                        {
+                            @Html.DropDownList("priority", Model.Priorityes, new { @id = "priority", @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
+                        }
+                        else
+                        {
+                            @Html.DropDownList("priority", Enumerable.Empty<SelectListItem>(), "Select", new { @id = "priority", @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
+                        }
                 </div>
         </div>
     </div>
@@ -66,34 +80,37 @@
                 <th></th>
             </tr>
         </thead>
-        @foreach (var item in Model.Issues)
+        @if (Model.Issues != null)
+        {
+            foreach (var item in Model.Issues)
             {
-            <tr class="align-center">
-                <td>
-                    @Html.DisplayFor(modelItem => item.Number)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Summary)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Descripton)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Priority.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Project.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.State.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.User.Name)
-                </td>
-                <td>
-                    <a href="#" class="btn btn-default" onclick="AddEditIssue(@item.Id)">Edit</a>
-                </td>
-            </tr>
+                <tr class="align-center">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Number)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Summary)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Descripton)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Priority.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Project.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.State.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.User.Name)
+                    </td>
+                    <td>
+                        <a href="#" class="btn btn-default" onclick="AddEditIssue(@item.Id)">Edit</a>
+                    </td>
+                </tr>
+            }
         }
     </table>
 
@@ -115,15 +132,52 @@
         </div>
     </div>
     <div>
-        <button style="float: right; margin-right:20px; margin-top:15px;" type="button" onclick="AddEditIssue(0)" class="btn btn-primary">
+
+        <div id="noIssueModal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" style="width:400px" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Something wrong</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Sorry, could not find no issues</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button id="createbtn" style="float: right; margin-right:20px; margin-top:15px;" type="button" onclick="AddEditIssue(0)" class="btn btn-primary">
             Create
         </button>
     </div>
 
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
     <script>
-     
+
+        $(document).ready(function () {
+            var check = '@(Model.Priorityes == null ? true : false)';
+            if (check === 'True')
+            {
+                document.getElementById('createbtn').disabled = true;
+            }
+            var check = '@(Model.Issues == null ? true : false)';
+            if (check === 'True')
+            {   
+                $("#noIssueModal").modal("show");
+            }
+        }
+        );
+
         var AddEditIssue = function (issId) {
-          
                 $.ajax({
                     url: "/Issue/AddEditIssue",
                     type: "GET",

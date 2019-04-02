@@ -10,8 +10,15 @@
 <div class="container">
     <div class="row">
         <form role="form">
-            <div  style="margin-left:20px; margin-top:15px; margin-right:10px;"class="form-group">
-                @Html.DropDownList("projectName", ViewBag.Projects as SelectList, "Select project", new { @id = "project", @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
+            <div  style="margin-left:20px; margin-top:15px; margin-right:10px;"class="form-group">            
+                @if (ViewBag.isNull != 0)
+                {
+                    @Html.DropDownList("projectName", ViewBag.Projects as SelectList, "Select project", new { @id = "project", @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
+                }
+                else
+                {
+                    @Html.DropDownList("projectName", Enumerable.Empty<SelectListItem>(), "Select project", new { @id = "project", @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
+                }
             </div>
             </form>
     </div>
@@ -82,12 +89,40 @@
     </div>
 </div>
 
+<div id="noProjectModal" class="modal fade centered-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="width:400px" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Something wrong</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Sorry, could not find projects</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.min.css"/>
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
 <script>
-
+    $(document).ready(function()
+    {
+        debugger;
+        var check = '@(ViewBag.isNull == 0 ? true : false)';
+        if (check === 'True')
+        {
+            $("#noProjectModal").modal("show");
+        }
+        
+    })
     $(function () {
         $("#boardColumn, #boardColumn, #boardColumn").sortable({
             revert: true,
@@ -98,7 +133,6 @@
                 Drop(+id, +newState);
             },
             beforeStop: function (event, ui) {
-
             }
         });
         var Drop = function(id, stateId)

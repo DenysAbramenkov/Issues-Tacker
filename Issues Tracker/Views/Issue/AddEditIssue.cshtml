@@ -27,13 +27,13 @@
         <br />
 
         <p class="font-weight-bold">Summary</p>
-        @Html.EditorFor(model => model.Issue.Summary, new { htmlAttributes = new { @class = "form-control", @style = "max-width:none" } })
-        @Html.ValidationMessageFor(model => model.Issue.Summary, "", new { @class = "text-danger" })
+            @Html.EditorFor(model => model.Issue.Summary, new { htmlAttributes = new { @class = "form-control", @style = "max-width:none" } })
+            @Html.ValidationMessageFor(model => model.Issue.Summary, "", new { @class = "text-danger" })
         <br />
 
         <p class="font-weight-bold">Descriprion</p>
-        @Html.TextAreaFor(model => model.Issue.Descripton, new { @class = "form-control", @style = "max-width:inherit", @rows = "5" })
-        @Html.ValidationMessageFor(model => model.Issue.Descripton, "", new { @class = "text-danger" })
+            @Html.TextAreaFor(model => model.Issue.Descripton, new { @class = "form-control", @style = "max-width:inherit", @rows = "5" })
+            @Html.ValidationMessageFor(model => model.Issue.Descripton, "", new { @class = "text-danger" })
         <br />
 
         <div class="row">
@@ -67,7 +67,6 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        debugger;
         var check = '@(Model.Issue.Priority == null ? true : false)';
         if (check === 'False') {
         $('#priorityChoose').val("@Model.Issue.PriorityId").prop('selected', true);

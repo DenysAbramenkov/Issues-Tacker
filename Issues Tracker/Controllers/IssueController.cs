@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Issues_Tracker.Models;
+using System.Data.Entity.Core;
 
 namespace Issues_Tracker.Controllers
 {
@@ -16,33 +13,41 @@ namespace Issues_Tracker.Controllers
         [HttpGet]
         public ActionResult Index(string projectName, string priority)
         {
-            IQueryable<string> priorityQuery = from p in db.Priorities
-                                            select p.Name;
 
-            List<Issue> issues = db.Issues.ToList();
-            if (!string.IsNullOrEmpty(projectName))
+            IssuePrioritiesList viewIssueList = new IssuePrioritiesList();
+            try
             {
-                if (projectName != "All")
+                List<Issue> issues = db.Issues.ToList();
+                if (!string.IsNullOrEmpty(projectName))
                 {
-                    issues = issues.Where(issue => issue.Project.Name.Contains(projectName)).ToList();
+                    if (projectName != "All")
+                    {
+                        issues = issues.Where(issue => issue.Project.Name.Contains(projectName)).ToList();
+                    }
                 }
-            }
-            
-            if (!string.IsNullOrEmpty(priority))
-            {
-                if (priority != "All")
+
+                if (!string.IsNullOrEmpty(priority))
                 {
-                    issues = issues.Where(x => x.Priority.Name.Contains(priority)).ToList();
-                } 
+                    if (priority != "All")
+                    {
+                        issues = issues.Where(x => x.Priority.Name.Contains(priority)).ToList();
+                    }
+                }
+
+                viewIssueList.Issues = issues;
+                List<string> Projects = new List<string>(db.Projects.Select(p => p.Name));
+                Projects.Add("All");
+                ViewBag.Projects = new SelectList(Projects);
+
+                List<string> Priorityes = new List<string>(db.Priorities.Select(p => p.Name));
+                Priorityes.Add("All");
+                viewIssueList.Priorityes = new SelectList(Priorityes);
             }
-            List<string> Projects = new List<string>(db.Projects.Select(p => p.Name));
-            Projects.Add("All");
-            ViewBag.Projects = new SelectList(Projects);
-            IssuePrioritiesList viewIssueList = new IssuePrioritiesList { Issues = issues };
-            List<string> Priorityes = new List<string>(db.Priorities.Select(p => p.Name));
-            Priorityes.Add("All");
-            viewIssueList.Priorityes = new  SelectList(Priorityes);
-            return View(viewIssueList);
+
+            catch (EntityException)
+            {}
+
+            return View(viewIssueList);  
         }
 
         [HttpPost]

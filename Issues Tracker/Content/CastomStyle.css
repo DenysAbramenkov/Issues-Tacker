@@ -49,3 +49,10 @@
     padding-left:10px;
     padding-bottom:5px
 } 
+
+.centered-modal.in {
+    display: flex;
+}
+.centered-modal .modal-dialog {
+    margin: auto;
+}
