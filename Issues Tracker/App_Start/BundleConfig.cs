@@ -31,7 +31,8 @@ namespace Issues_Tracker
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css",
-                      "~/Content/CastomStyle.css"));
+                      "~/Content/CastomStyle.css",
+                      "~/Content/PagedList.css"));
         }
     }
 }

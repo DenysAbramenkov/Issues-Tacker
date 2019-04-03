@@ -4,28 +4,30 @@
     ViewBag.Title = "Index";
 }
 
-<br/>
+<br />
 <h3 style="margin-left:15px;">Choose project name:</h3>
 
 <div class="container">
     <div class="row">
         <form role="form">
-            <div  style="margin-left:20px; margin-top:15px; margin-right:10px;"class="form-group">            
+            <div style="margin-left:20px; margin-top:15px; margin-right:10px;" class="form-group">
                 @if (ViewBag.isNull != 0)
                 {
-                    @Html.DropDownList("projectName", ViewBag.Projects as SelectList, "Select project", new { @id = "project", @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
+                    @Html.DropDownList("projectName", ViewBag.Projects as SelectList, "Select project",
+                    new { @id = "project", @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
                 }
                 else
                 {
-                    @Html.DropDownList("projectName", Enumerable.Empty<SelectListItem>(), "Select project", new { @id = "project", @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
+                    @Html.DropDownList("projectName", Enumerable.Empty<SelectListItem>(), "Select project",
+                    new { @id = "project", @class = "form-control", @style = "max-width:none", onchange = @"form.submit();" })
                 }
             </div>
-            </form>
+        </form>
     </div>
 </div>
 
-
 <div style="position:page; height:100%" class="container">
+    
     <div class="row">
         <div class="col-md-4">
             <h3>Backlog</h3>
@@ -33,7 +35,7 @@
         </div>
         <div class="col-md-4">
             <h3>In Progress</h3>
-            <br/>
+            <br />
         </div>
         <div class="col-md-4">
             <h3>Done</h3>
@@ -42,8 +44,8 @@
     </div>
 
     <div class="row">
-        <div  class="col-md-4">
-            <div data-state= "1" id="boardColumn" class="col-md-12">
+        <div class="col-md-4">
+            <div data-state="1" class="col-md-12 boardColumn">
                 @foreach (var item in Model.Issues.Where(i => i.State.Id == 1).ToList())
                 {
                     <div id="@item.Id" class="card">
@@ -55,10 +57,10 @@
                     </div>
                 }
             </div>
-         </div>
+        </div>
 
-        <div  class="col-md-4">
-            <div data-state= "2" id="boardColumn" class="col-md-12">
+        <div class="col-md-4">
+            <div data-state="2" class="col-md-12 boardColumn">
                 @foreach (Issue item in Model.Issues.Where(i => i.State.Id == 2))
             {
                     <div id="@item.Id" class="card">
@@ -70,10 +72,10 @@
                     </div>
                 }
             </div>
-            
         </div>
+
         <div class="col-md-4">
-            <div data-state= "3" id="boardColumn" class="col-md-12">
+            <div data-state="3" class="col-md-12 boardColumn">
                 @foreach (var item in Model.Issues.Where(i => i.State.Id == 3).ToList())
                 {
                     <div id="@item.Id" class="card">
@@ -85,7 +87,7 @@
                     </div>
                 }
             </div>
-            </div>
+        </div>
     </div>
 </div>
 
@@ -108,35 +110,27 @@
     </div>
 </div>
 
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.min.css"/>
-<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-
 <script>
-    $(document).ready(function()
-    {
-        debugger;
+
+    $(document).ready(function () {
         var check = '@(ViewBag.isNull == 0 ? true : false)';
-        if (check === 'True')
-        {
+        if (check === 'True') {
             $("#noProjectModal").modal("show");
         }
-        
     })
+
     $(function () {
-        $("#boardColumn, #boardColumn, #boardColumn").sortable({
+        $(".boardColumn").sortable({
             revert: true,
-            connectWith: "#boardColumn, #boardColumn, #boardColumn",
+            connectWith: ".boardColumn",
             receive: function (e, ui) {
                 var id = ui.item.context.id;
                 var newState = $(this).data("state");
-                Drop(+id, +newState);
-            },
-            beforeStop: function (event, ui) {
+                Drop(parseInt(id), parseInt(newState));
             }
         });
-        var Drop = function(id, stateId)
-        {
+
+        var Drop = function (id, stateId) {
             $.ajax({
                 type: "POST",
                 url: "/Board/UpdateState",
@@ -147,4 +141,5 @@
             })
         }
     });
+
 </script>

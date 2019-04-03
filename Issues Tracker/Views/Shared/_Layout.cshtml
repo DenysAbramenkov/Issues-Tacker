@@ -6,8 +6,12 @@
     <title>@ViewBag.Title - Issues Tracker</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jquery-ui")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
 </head>
+
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
@@ -30,21 +34,56 @@
     </div>
 
     <div class="container body-content">
-       
         @RenderBody()
     </div>
 
+    <div id="createProjectModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" style="width:500px" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Creation of new Project</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Input name for new Project:</p>
+                    <input id="projectName" class="form-control" type="email" required="" placeholder="Name" oninvalid="this.setCustomValidity('Please Enter Name')"
+                           oninput="setCustomValidity('')" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCreate" class="btn btn-success" data-dismiss="modal">Create</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        $('#createProject').click( function () {
+        $('#createProject').click(function () {
             $("#createProjectModal").modal("show");
+        });
+
+        $('#btnCreate').click(function () {
+            var prjName = $("#projectName").val();
+            $.ajax({
+                url: "/Project/CreateProject",
+                type: "POST",
+                data: { projectName: prjName },
+                success: function (result) {
+                    var check = '@(ViewBag.failedMassage == string.Empty ? true : false)';
+                    var alertMassage = '@(ViewBag.failedMassage)';
+                    if (check === 'False') {
+                        alert(alertMassage);
+                    }
+                    $('#createProjectModal').modal('hide');
+                },
+                error: function () {
+                    alert("There is some issues in the server");
+                }
+            });
         });
     </script>
 
-
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/jquery-ui")
-    @Scripts.Render("~/bundles/jqueryval")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
 </body>
 </html>

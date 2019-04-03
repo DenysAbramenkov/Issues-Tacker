@@ -50,9 +50,10 @@ namespace Issues_Tracker.Controllers
             }
 
             catch (EntityException)
-            {}
-                
-           
+            {
+
+            }
+
             return View(viewIssueList);  
         }
 
@@ -61,9 +62,9 @@ namespace Issues_Tracker.Controllers
         {
             GetUpdatedOrNewIssue(issue);
             return RedirectToAction("Index");
-
         }
 
+        [HttpPost]
         public ActionResult AddEditIssue(int issueId)
         {
             IssueView issueView = new IssueView
@@ -83,7 +84,6 @@ namespace Issues_Tracker.Controllers
                 issueView.Issue = new Issue();
             }
            
-
             return PartialView("AddEditIssue", issueView);
         }
 
@@ -106,7 +106,6 @@ namespace Issues_Tracker.Controllers
                 issueToUpdate.User = db.Users.FirstOrDefault(x => x.Id == issue.AssigneeId);
                 db.SaveChanges();
             }
-
             else
             {
                 issueToUpdate = issue;

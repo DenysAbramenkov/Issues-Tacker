@@ -6,9 +6,9 @@ namespace Issues_Tracker.Controllers
 {
     public class BoardController : Controller
     {
-
         IssueTrackerEntities db = new IssueTrackerEntities();
 
+        [HttpGet]
         public ActionResult Index(string projectName)
         {
             Project project;
@@ -27,6 +27,7 @@ namespace Issues_Tracker.Controllers
             {
                 listOfProjects.Count();
                 ViewBag.Projects = listOfProjects;
+                ViewBag.isNull = 1;
             }
             catch (EntityException)
             {
@@ -52,7 +53,7 @@ namespace Issues_Tracker.Controllers
             issue.State = db.States.FirstOrDefault(s => s.Id == stateId);
             Project project = db.Projects.FirstOrDefault(p => p.Id == issue.ProjectId);
             db.SaveChanges();
-            return View("Index", project);
+            return RedirectToAction("Index", project.Name);
         }
     }
 }

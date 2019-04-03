@@ -5,7 +5,12 @@
     padding:0px;
 }
 
-#boardColumn
+.modal-title
+{
+    display: inline-block; 
+}
+
+.boardColumn
 {
     border:solid;
     padding:0px;

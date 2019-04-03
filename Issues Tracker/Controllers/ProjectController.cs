@@ -23,7 +23,7 @@ namespace Issues_Tracker.Controllers
                     project.Name = projectName;
                     db.Projects.Add(project);
                     db.SaveChanges();
-                    ViewBag.failedMassage = "";
+                    ViewBag.failedMassage = string.Empty;
                 }
                 else
                 {
@@ -34,6 +34,11 @@ namespace Issues_Tracker.Controllers
             {
 
             }
+            catch (EntityException)
+            {
+
+            }
+
             return RedirectToAction("Index", "Issue");
         }
     }
