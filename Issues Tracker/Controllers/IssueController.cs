@@ -3,6 +3,8 @@ using System.Linq;
 using System.Web.Mvc;
 using Issues_Tracker.Models;
 using System.Data.Entity.Core;
+using PagedList.Mvc;
+using PagedList;
 
 namespace Issues_Tracker.Controllers
 {
@@ -11,7 +13,7 @@ namespace Issues_Tracker.Controllers
         IssueTrackerEntities db = new IssueTrackerEntities();
 
         [HttpGet]
-        public ActionResult Index(string projectName, string priority)
+        public ActionResult Index(string projectName, string priority, int? page)
         {
 
             IssuePrioritiesList viewIssueList = new IssuePrioritiesList();
@@ -34,7 +36,10 @@ namespace Issues_Tracker.Controllers
                     }
                 }
 
-                viewIssueList.Issues = issues;
+                int pageSize = 8;
+                int pageNumber = (page ?? 1);
+                viewIssueList.Issues = issues.ToPagedList(pageNumber, pageSize);
+
                 List<string> Projects = new List<string>(db.Projects.Select(p => p.Name));
                 Projects.Add("All");
                 ViewBag.Projects = new SelectList(Projects);
@@ -46,7 +51,8 @@ namespace Issues_Tracker.Controllers
 
             catch (EntityException)
             {}
-
+                
+           
             return View(viewIssueList);  
         }
 

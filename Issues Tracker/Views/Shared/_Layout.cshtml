@@ -22,15 +22,24 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Kanban Board", "Index", "Board")</li>
+                    <li><a href="#" id="createProject">Create Project</a></li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
     </div>
+
     <div class="container body-content">
+       
         @RenderBody()
-        <hr />
     </div>
+
+    <script>
+        $('#createProject').click( function () {
+            $("#createProjectModal").modal("show");
+        });
+    </script>
+
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jquery-ui")

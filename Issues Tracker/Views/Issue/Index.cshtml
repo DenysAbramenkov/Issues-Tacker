@@ -1,8 +1,10 @@
 ﻿@model Issues_Tracker.Models.IssuePrioritiesList
 
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
-    ViewBag.Title = "Choose project name";
+    ViewBag.Title = "Good title";
 }
 
 <br/>
@@ -113,9 +115,19 @@
             }
         }
     </table>
-
 </div>
-                                                                                                            
+<div class="row">
+    <br />
+    <div class="col-md-8">
+        @Html.PagedListPager(Model.Issues, page => Url.Action("Index", new { page }))
+    </div>
+    <div class="col-md-4">
+        <button id="createbtn" style="float: right; margin-right:20px; margin-top:15px;" type="button" onclick="AddEditIssue(0)" class="btn btn-primary">
+            Create
+        </button>
+    </div> 
+ </div>
+                                                                                                       
     <div class="modal fade" id="editModal" tabindex="-1"  role="dialog" aria-labelledby="deletelLabel" data-show="true">                                      
         <div class="modal-dialog" style="width:700px" role="document">
             <div class="modal-content">
@@ -131,35 +143,56 @@
             </div>
         </div>
     </div>
-    <div>
 
-        <div id="noIssueModal" class="modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-dialog-centered" style="width:400px" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Something wrong</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Sorry, could not find no issues</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
+    <div id="noIssueModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" style="width:400px" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Something wrong</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Sorry, could not find no issues</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
-
-        <button id="createbtn" style="float: right; margin-right:20px; margin-top:15px;" type="button" onclick="AddEditIssue(0)" class="btn btn-primary">
-            Create
-        </button>
     </div>
+
+    <div id="createProjectModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" style="width:500px" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Creation of new Project</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Input name for new Project:</p>
+                <input id="projectName" class="form-control" type="email"  required="" placeholder="Name" oninvalid="this.setCustomValidity('Please Enter Name')"      
+                 oninput="setCustomValidity('')" />
+                @Html.ValidationMessage("projectName")
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="CreateNewProject()" id="create" class="btn btn-success" data-dismiss="modal">Create</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
 
     <script>
 
@@ -171,25 +204,48 @@
             }
             var check = '@(Model.Issues == null ? true : false)';
             if (check === 'True')
-            {   
+            {
                 $("#noIssueModal").modal("show");
             }
         }
         );
 
         var AddEditIssue = function (issId) {
-                $.ajax({
-                    url: "/Issue/AddEditIssue",
-                    type: "GET",
-                    data: { issueId: issId },
-                    success: function (result) {
-                        $('#AddEditModalbody').html(result);
-                        $('#editModal').modal('show');
-                    },
-                    error: function () {
-                        alert("There is some problem in the service!")
-                    }
-                });
-            }
+            $.ajax({
+                url: "/Issue/AddEditIssue",
+                type: "GET",
+                data: { issueId: issId },
+                success: function (result) {
+                    $('#AddEditModalbody').html(result);
+                    $('#editModal').modal('show');
+                },
+                error: function () {
+                    alert("There is some problem in the service!")
+                }
+            });
+        };
+
+        
+        var CreateNewProject = function () {
+            var prjName = $("#projectName").val();
+            $.ajax({
+                url: "/Project/CreateProject",
+                type: "POST",
+                data: { projectName: prjName },
+                success: function (result) {
+                 var check = '@(ViewBag.failedMassage == "" ? true : false)';
+                    var alertMassage = '@(ViewBag.failedMassage)';
+                    debugger;
+                if (check === 'False')
+                {
+                    alert(alertMassage);
+                }
+
+                $('#createProjectModal').modal('hide');
+                },
+
+            });
+        };
+
     </script>
 
