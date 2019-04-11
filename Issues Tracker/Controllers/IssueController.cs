@@ -8,11 +8,12 @@ using PagedList;
 
 namespace Issues_Tracker.Controllers
 {
+    [Authorize(Roles = "Developer, QA, Project Manager")]
     public class IssueController : Controller
     {
         IssueTrackerEntities db = new IssueTrackerEntities();
 
-        [HttpGet]
+        [HttpGet] 
         public ActionResult Index(string projectName, string priority, int? page)
         {
 

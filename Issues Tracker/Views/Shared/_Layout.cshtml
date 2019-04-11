@@ -13,6 +13,7 @@
 </head>
 
 <body>
+
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -21,17 +22,38 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Issues Tracker", "Index", "Issue", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Kanban Board", "Index", "Board")</li>
-                    <li><a href="#" id="createProject">Create Project</a></li>
+                    @if (Request.IsAuthenticated)
+                    {
+                        if (User.IsInRole("Developer") || User.IsInRole("QA") || User.IsInRole("Project Manager"))
+                        {
+
+                            <li>@Html.ActionLink("Issues Tracker", "Index", "Issue", new { area = "" }, new {@style = "margin-left: -30px;", @class = "navbar-brand" })</li>
+                            <li>@Html.ActionLink("Kanban Board", "Index", "Board")</li>
+                            if (User.IsInRole("Project Manager"))
+                            {
+                                <li>
+                                    <a href="#" id="createProject">Create Project</a>
+                                </li>
+                            }
+                        }
+                        if (User.IsInRole("Admin"))
+                        {
+                            <li>@Html.ActionLink("List of Users", "GetUserList", "Account", new { area = "" }, new { @style = "margin-left: -30px;", @class = "navbar-brand" })</li>
+                            <li>@Html.ActionLink("Manage or add roles", "Index", "Role")</li>
+                        }
+                    }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
+            
         </div>
+
     </div>
+
+    
 
     <div class="container body-content">
         @RenderBody()
@@ -86,4 +108,7 @@
     </script>
 
 </body>
+
+
+
 </html>

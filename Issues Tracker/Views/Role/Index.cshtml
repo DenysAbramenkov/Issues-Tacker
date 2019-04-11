@@ -1,0 +1,60 @@
+﻿@model List<Issues_Tracker.Models.ApplicationRole>
+ 
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>List of Roles</h2>
+
+<hr />
+
+<div class="table-responsive">
+    <table class="table table-striped table-responsive">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model[0].Name)
+                </th>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model[0].Description)
+                </th>
+            </tr>
+        </thead>
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                <tr class="align-center">
+                    <td>
+                        @Html.DisplayFor(model => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Description)
+                    </td>
+                    <td>
+                        <a href="#" data-name="@item.Id" class="btn btn-primary editRole">Edit role</a>
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+</div>
+
+<button id="createRole" style="float: left; margin-left:20px; margin-top:15px;" type="button" class="btn btn-success">
+    Create role
+</button>
+
+<script>
+    $("#createRole").click(function () {
+        var url = '@Url.Action("CreateRole", "Role")';
+        window.location.href = url;
+        }
+    );
+
+    $(".editRole").click(function () {
+        var role = $(this).data("name").toString();
+        var url = '@Url.Action("GetEditRole", "Role", new {id = "0a208374-25b5-41f9-8137-b793dd424be5"})';
+        window.location.href = url;
+    }
+    );
+</script>

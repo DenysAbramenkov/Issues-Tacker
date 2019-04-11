@@ -230,17 +230,24 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>IssuesTracker.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904090835384_DataMigration.cs" />
+    <Compile Include="Migrations\201904090835384_DataMigration.Designer.cs">
+      <DependentUpon>201904090835384_DataMigration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\ApplicationContext.cs" />
-    <Compile Include="Models\ApplicationRole.cs" />
-    <Compile Include="Models\ApplicationRoleManager.cs" />
-    <Compile Include="Models\ApplicationUser.cs" />
-    <Compile Include="Models\ApplicationUserManager.cs" />
+    <Compile Include="Models\ASP Identyty\ApplicationContext.cs" />
+    <Compile Include="Models\ASP Identyty\ApplicationRole.cs" />
+    <Compile Include="Models\ASP Identyty\ApplicationRoleManager.cs" />
+    <Compile Include="Models\ASP Identyty\ApplicationUser.cs" />
+    <Compile Include="Models\ASP Identyty\ApplicationUserManager.cs" />
+    <Compile Include="Models\Role\CreateRoleModel.cs" />
+    <Compile Include="Models\Role\EditRoleModel.cs" />
     <Compile Include="Models\EmailService.cs" />
     <Compile Include="Models\IssuePrioritiesList.cs" />
     <Compile Include="Models\IssueView.cs" />
-    <Compile Include="Models\LoginModel.cs" />
-    <Compile Include="Models\RegisterModel.cs" />
+    <Compile Include="Models\Login\LoginModel.cs" />
+    <Compile Include="Models\Login\RegisterModel.cs" />
+    <Compile Include="Models\UserView.cs" />
     <Compile Include="Priority.cs">
       <DependentUpon>IssuesTracker.tt</DependentUpon>
     </Compile>
@@ -378,11 +385,15 @@
     <Content Include="Views\Board\Index.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Role\CreateRole.cshtml" />
+    <Content Include="Views\Role\EditRole.cshtml" />
+    <Content Include="Views\Account\GetUserList.cshtml" />
+    <Content Include="Views\Role\Index.cshtml" />
+    <Content Include="Views\Account\ChangeRole.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Project\" />
-    <Folder Include="Views\Role\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -393,6 +404,11 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201904090835384_DataMigration.resx">
+      <DependentUpon>201904090835384_DataMigration.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
