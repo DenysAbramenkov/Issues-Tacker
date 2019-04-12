@@ -52,7 +52,6 @@ namespace Issues_Tracker.Controllers
             return View(model);
         }
 
-        [HttpPost]
         public ActionResult GetEditRole(string id)
         {
             ApplicationRole role = RoleManager.FindById(id);
@@ -65,18 +64,15 @@ namespace Issues_Tracker.Controllers
             if (ModelState.IsValid)
             {
                 ApplicationRole role = RoleManager.FindById(model.Id.ToString());
+                role.Name = model.Name;
                 role.Description = model.Description;
-                IdentityResult result = RoleManager.Update(RoleManager.FindById(model.Id.ToString()));
+                IdentityResult result = RoleManager.Update(RoleManager.FindById(model.Id));
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index");
                 }
-                else
-                {
-                    ModelState.AddModelError("", "Something goes wrong");
-                }
             }
-            return View(model);
+            return RedirectToAction("Index");
         }
     }
 }

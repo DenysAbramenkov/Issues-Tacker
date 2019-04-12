@@ -1,5 +1,5 @@
 ﻿@model List<Issues_Tracker.Models.ApplicationRole>
- 
+
 @{
     ViewBag.Title = "Index";
 }
@@ -48,13 +48,13 @@
     $("#createRole").click(function () {
         var url = '@Url.Action("CreateRole", "Role")';
         window.location.href = url;
-        }
+    }
     );
 
     $(".editRole").click(function () {
         var role = $(this).data("name").toString();
-        var url = '@Url.Action("GetEditRole", "Role", new {id = "0a208374-25b5-41f9-8137-b793dd424be5"})';
-        window.location.href = url;
+        var url = '@Url.Action("GetEditRole", "Role")/';
+        window.location.href = url + role;
     }
     );
 </script>

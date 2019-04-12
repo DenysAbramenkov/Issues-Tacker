@@ -8,11 +8,11 @@ namespace Issues_Tracker.Models
 {
     public class LoginModel
     {
-            [Required]
-            public string Email { get; set; }
+        [Required(ErrorMessage = "Required field")]
+        public string Email { get; set; }
 
-            [Required]
-            [DataType(DataType.Password)]
-            public string Password { get; set; }
+        [Required(ErrorMessage = "Required field")]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
     }
 }

@@ -24,6 +24,7 @@ namespace Issues_Tracker.Controllers
 
         ApplicationContext db = new ApplicationContext();
 
+        [Authorize(Roles = "Admin")]
         public ActionResult GetUserList()
         {
             List<UserView> userList = new List<UserView>();
@@ -75,7 +76,7 @@ namespace Issues_Tracker.Controllers
         [AllowAnonymous]
         public ActionResult ConfirmEmail(string userId, string code)
         {
-            ApplicationUser user = this.UserManager.FindById(userId);
+            ApplicationUser user = UserManager.FindById(userId);
             if (user != null)
             {
                 if (user.Id == userId)
@@ -96,6 +97,7 @@ namespace Issues_Tracker.Controllers
             }
         }
 
+        [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
             ViewBag.returnUrl = returnUrl;
@@ -103,7 +105,7 @@ namespace Issues_Tracker.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
         public ActionResult Login(LoginModel model, string returnUrl)
         {
             if (ModelState.IsValid)
@@ -138,12 +140,30 @@ namespace Issues_Tracker.Controllers
             return RedirectToAction("Login");
         }
 
-        [HttpPost]
-        public ActionResult ChangeRole(string id)
-        { 
-            return PartialView(UserManager.FindById(id));
-        } 
+        private ApplicationRoleManager RoleManager
+        {
+            get
+            {
+                return HttpContext.GetOwinContext().GetUserManager<ApplicationRoleManager>();
+            }
+        }
 
+        [Authorize(Roles = "Admin")]
+        public ActionResult GetChangeRole(string id)
+        {
+            ViewBag.Roles = new SelectList(RoleManager.Roles.ToList(), "Name", "Name");
+            return View("ChangeRole", UserManager.FindById(id));
+        }
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult ChangeRole(string userName, string roleName)
+        {
+            ApplicationUser user = UserManager.FindByName(userName);
+            var roles = UserManager.GetRoles(user.Id);
+            UserManager.RemoveFromRoles(user.Id, roles.ToArray());
+            UserManager.AddToRole(user.Id, roleName);
+            return RedirectToAction("GetUserList");
+        }
 
     }
 }

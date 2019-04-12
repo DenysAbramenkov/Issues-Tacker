@@ -49,7 +49,6 @@ namespace Issues_Tracker.Controllers
                 Priorityes.Add("All");
                 viewIssueList.Priorityes = new SelectList(Priorityes);
             }
-
             catch (EntityException)
             {
 
