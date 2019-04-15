@@ -4,6 +4,7 @@ using System.Web.Mvc;
 
 namespace Issues_Tracker.Controllers
 {
+    [Authorize(Roles = "Developer, QA, Project Manager, Admin")]
     public class BoardController : Controller
     {
         IssueTrackerEntities db = new IssueTrackerEntities();

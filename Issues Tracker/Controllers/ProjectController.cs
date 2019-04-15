@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace Issues_Tracker.Controllers
 {
+    [Authorize(Roles = "Project Manager")]
     public class ProjectController : Controller
     {
         IssueTrackerEntities db = new IssueTrackerEntities();

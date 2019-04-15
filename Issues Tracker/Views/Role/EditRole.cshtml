@@ -1,0 +1,21 @@
+﻿@model Issues_Tracker.Models.ApplicationRole
+
+@{
+    ViewBag.Title = "EditRole";
+}
+
+<h2>EditRole</h2>
+<hr />
+
+@using (Html.BeginForm("EditRole", "Role"))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.Id)
+
+    <h4>Name: </h4>
+    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+    <h4>Description: </h4>
+    @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @rows = "3" })
+    <input type="submit" style="margin-top:20px;" value="Update role" class="btn btn-primary" />
+}

@@ -1,0 +1,23 @@
+﻿@model Issues_Tracker.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "ChangeRole";
+}
+
+<h2>ChangeRole</h2>
+
+@using (Html.BeginForm("ChangeRole", "Account"))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.Id)
+
+    <h4>Name: </h4>
+    @Html.EditorFor(model => @Model.UserName, new { htmlAttributes = new { @name = "userName", @class = "form-control" } })
+    <h4>Role: </h4>
+    if (ViewBag.Roles != null)
+    {
+        @Html.DropDownList("roleName", ViewBag.Roles as SelectList, "Select new role", new { @class = "form-control" })
+    }
+    <input type="submit" style="margin-top:20px;" value="Update role" class="btn btn-primary" />
+}

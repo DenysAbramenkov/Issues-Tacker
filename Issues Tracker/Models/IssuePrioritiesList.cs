@@ -7,9 +7,9 @@ namespace Issues_Tracker.Models
 {
     public class IssuePrioritiesList
     {
-        public IPagedList<Issue> Issues;
+        public IPagedList<Issue> Issues { get; set; }
 
-        public SelectList Priorityes;
+        public SelectList Priorityes { get; set; }
 
         public string IssuePriority { get; set; }
 

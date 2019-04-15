@@ -8,14 +8,14 @@ namespace Issues_Tracker.Models
 {
     public class IssueView
     {
-        public Issue Issue;
+        public Issue Issue { get; set; }
 
-        public SelectList Priorityes;
+        public SelectList Priorityes { get; set; }
 
-        public SelectList Projects;
+        public SelectList Projects { get; set; }
 
-        public SelectList States;
+        public SelectList States { get; set; }
 
-        public SelectList Asignee;
+        public SelectList Asignee { get; set; }
     }
 }
