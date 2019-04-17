@@ -3,7 +3,6 @@ using Issues_Tracker.Models.Login;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System.Data.SqlClient;
-using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
 

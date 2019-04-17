@@ -3,7 +3,6 @@ using System.Linq;
 using System.Web.Mvc;
 using Issues_Tracker.Models;
 using System.Data.Entity.Core;
-using PagedList.Mvc;
 using PagedList;
 using Issues_Tracker.BL;
 

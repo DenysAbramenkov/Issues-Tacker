@@ -30,6 +30,7 @@ namespace Issues_Tracker.Controllers
             }
 
             SelectList listOfProjects = new SelectList(_context.Projects.Select(p => p.Name));
+
             try
             {
                 ViewBag.Projects = listOfProjects;

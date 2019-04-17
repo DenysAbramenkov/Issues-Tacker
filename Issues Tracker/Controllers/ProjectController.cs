@@ -1,10 +1,7 @@
 ﻿using Issues_Tracker.BL;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity.Core;
 using System.Data.Entity.Validation;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Issues_Tracker.Controllers

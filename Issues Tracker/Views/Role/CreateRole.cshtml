@@ -13,7 +13,9 @@
 
     <h4>Name: </h4>
     @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+
     <h4>Description: </h4>
     @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+
     <input type="submit" style="margin-top:20px;" value="Add" class="btn btn-primary" />
 }

@@ -1,13 +1,8 @@
 ﻿using Issues_Tracker;
 using Issues_Tracker.BL;
 using Issues_Tracker.BL.Interfaces;
-using Issues_Tracker.Controllers;
 using Moq;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IssuesTracker.Tests.Controllers
 {
@@ -25,7 +20,7 @@ namespace IssuesTracker.Tests.Controllers
 
         internal Mock<IRepository<State>> StateRepositoryMock;
 
-        public List<Issue> IssueList;
+        internal List<Issue> IssueList;
 
         internal List<State> StateList;
 
