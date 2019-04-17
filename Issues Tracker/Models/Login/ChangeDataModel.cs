@@ -13,9 +13,9 @@ namespace Issues_Tracker.Models.Login
         public string LastName { get; set; }
 
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DateOfBirthday { get; set; }
 
-        public string PhoneNumber { get; internal set; }
+        public string PhoneNumber { get; set; }
     }
 }

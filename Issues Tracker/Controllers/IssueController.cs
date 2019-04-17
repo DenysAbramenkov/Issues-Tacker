@@ -5,13 +5,19 @@ using Issues_Tracker.Models;
 using System.Data.Entity.Core;
 using PagedList.Mvc;
 using PagedList;
+using Issues_Tracker.BL;
 
 namespace Issues_Tracker.Controllers
 {
     [Authorize(Roles = "Developer, QA, Project Manager")]
     public class IssueController : Controller
     {
-        IssueTrackerEntities db = new IssueTrackerEntities();
+        IUnitOfWork _context;
+
+        public IssueController(IUnitOfWork context)
+        {
+            _context = context;
+        }
 
         [HttpGet] 
         public ActionResult Index(string projectName, string priority, int? page)
@@ -20,32 +26,17 @@ namespace Issues_Tracker.Controllers
             IssuePrioritiesList viewIssueList = new IssuePrioritiesList();
             try
             {
-                List<Issue> issues = db.Issues.ToList();
-                if (!string.IsNullOrEmpty(projectName))
-                {
-                    if (projectName != "All")
-                    {
-                        issues = issues.Where(issue => issue.Project.Name.Contains(projectName)).ToList();
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(priority))
-                {
-                    if (priority != "All")
-                    {
-                        issues = issues.Where(x => x.Priority.Name.Contains(priority)).ToList();
-                    }
-                }
-
+                List<Issue> issues = _context.Issues.GetAll(projectName, priority).ToList();
+                
                 int pageSize = 8;
                 int pageNumber = (page ?? 1);
                 viewIssueList.Issues = issues.ToPagedList(pageNumber, pageSize);
-
-                List<string> Projects = new List<string>(db.Projects.Select(p => p.Name));
+           
+                List<string> Projects = new List<string>(_context.Projects.Select(p => p.Name));
                 Projects.Add("All");
                 ViewBag.Projects = new SelectList(Projects);
 
-                List<string> Priorityes = new List<string>(db.Priorities.Select(p => p.Name));
+                List<string> Priorityes = new List<string>(_context.Priorityes.Select(p => p.Name));
                 Priorityes.Add("All");
                 viewIssueList.Priorityes = new SelectList(Priorityes);
             }
@@ -60,7 +51,7 @@ namespace Issues_Tracker.Controllers
         [HttpPost]
         public ActionResult Index(Issue issue)
         {
-            GetUpdatedOrNewIssue(issue);
+            _context.Issues.AddOrUpdateIssue(issue);
             return RedirectToAction("Index");
         }
 
@@ -69,15 +60,15 @@ namespace Issues_Tracker.Controllers
         {
             IssueView issueView = new IssueView
             { 
-                States = new SelectList(db.States, "Id", "Name"),
-                Asignee = new SelectList(db.Users, "Id", "Name"),
-                Projects = new SelectList(db.Projects, "Id", "Name"),
-                Priorityes = new SelectList(db.Priorities, "Id", "Name")
+                States = new SelectList(_context.States.GetAll(), "Id", "Name"),
+                Asignee = new SelectList(_context.Users.GetAll(), "Id", "Name"),
+                Projects = new SelectList(_context.Projects.GetAll(), "Id", "Name"),
+                Priorityes = new SelectList(_context.Priorityes.GetAll(), "Id", "Name")
             };
 
             if (issueId > 0)
             {
-                issueView.Issue = db.Issues.FirstOrDefault((issue => issue.Id == issueId));
+                issueView.Issue = _context.Issues.Get(issueId);
             }
             else
             {
@@ -85,43 +76,6 @@ namespace Issues_Tracker.Controllers
             }
            
             return PartialView("AddEditIssue", issueView);
-        }
-
-        private void GetUpdatedOrNewIssue(Issue issue)
-        {
-            Issue issueToUpdate = new Issue();
-            if (issue.Id > 0)
-            {
-                issueToUpdate = db.Issues.FirstOrDefault(x => x.Id == issue.Id);
-                issueToUpdate.Number = issue.Number;
-                issueToUpdate.PriorityId = issue.PriorityId;
-                issueToUpdate.ProjectId = issue.ProjectId;
-                issueToUpdate.StateId = issue.StateId;
-                issueToUpdate.AssigneeId = issue.AssigneeId;
-                issueToUpdate.Descripton = issue.Descripton;
-                issueToUpdate.Summary = issue.Summary;
-                issueToUpdate.Project = db.Projects.FirstOrDefault(x => x.Id == issue.ProjectId);
-                issueToUpdate.State = db.States.FirstOrDefault(x => x.Id == issue.StateId);
-                issueToUpdate.Priority = db.Priorities.FirstOrDefault(x => x.Id == issue.PriorityId);
-                issueToUpdate.User = db.Users.FirstOrDefault(x => x.Id == issue.AssigneeId);
-                db.SaveChanges();
-            }
-            else
-            {
-                issueToUpdate = issue;
-                issueToUpdate.Number = GetNewNumber();
-                issueToUpdate.Project = db.Projects.FirstOrDefault(x => x.Id == issue.ProjectId);
-                issueToUpdate.State = db.States.FirstOrDefault(x => x.Id == issue.StateId);
-                issueToUpdate.Priority = db.Priorities.FirstOrDefault(x => x.Id == issue.PriorityId);
-                issueToUpdate.User = db.Users.FirstOrDefault(x => x.Id == issue.AssigneeId);
-                db.Issues.Add(issueToUpdate);
-                db.SaveChanges();
-            }         
-        }
-
-        private int GetNewNumber()
-        {
-            return db.Issues.Count() + 1;
         }
     }
 }

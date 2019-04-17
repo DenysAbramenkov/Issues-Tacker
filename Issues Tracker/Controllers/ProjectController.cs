@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Issues_Tracker.BL;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core;
 using System.Data.Entity.Validation;
@@ -11,19 +12,24 @@ namespace Issues_Tracker.Controllers
     [Authorize(Roles = "Project Manager")]
     public class ProjectController : Controller
     {
-        IssueTrackerEntities db = new IssueTrackerEntities();
+        IUnitOfWork _context;
+
+        public ProjectController(IUnitOfWork context)
+        {
+            _context = context;
+        }
 
         [HttpPost]
         public ActionResult CreateProject(string projectName)
         {
             try
             {
-                if (!db.Projects.Select(p => p.Name).Contains(projectName))
+                if (!_context.Projects.Select(p => p.Name).Contains(projectName))
                 {
                     Project project = new Project();
                     project.Name = projectName;
-                    db.Projects.Add(project);
-                    db.SaveChanges();
+                    _context.Projects.Create(project);
+                    _context.Save();
                     ViewBag.failedMassage = string.Empty;
                 }
                 else

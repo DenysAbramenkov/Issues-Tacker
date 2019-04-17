@@ -45,7 +45,12 @@ namespace Issues_Tracker.Controllers
         public ActionResult ChangeUserData()
         {
             ChangeDataModel model = new ChangeDataModel();
-            model.UserId = UserManager.FindByName(User.Identity.Name).Id;
+            ApplicationUser user = UserManager.FindByName(User.Identity.Name);
+            model.UserId = user.Id;
+            model.FirstName = user.FirstName;
+            model.PhoneNumber = user.PhoneNumber;
+            model.DateOfBirthday = user.DateOfBirthday;
+            model.LastName = user.LastName;
             return View(model);
         }
 
@@ -60,7 +65,7 @@ namespace Issues_Tracker.Controllers
                 user.FirstName = model.FirstName;
                 user.LastName = model.LastName;
                 user.DateOfBirthday = model.DateOfBirthday;
-                db.SaveChanges();
+                UserManager.Update(user);
             }
             return View("Index");
         }

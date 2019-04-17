@@ -1,4 +1,5 @@
-﻿using System.Data.Entity.Core;
+﻿using Issues_Tracker.BL;
+using System.Data.Entity.Core;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -7,7 +8,12 @@ namespace Issues_Tracker.Controllers
     [Authorize(Roles = "Developer, QA, Project Manager, Admin")]
     public class BoardController : Controller
     {
-        IssueTrackerEntities db = new IssueTrackerEntities();
+        IUnitOfWork _context;
+
+        public BoardController(IUnitOfWork context)
+        {
+            _context = context;
+        }
 
         [HttpGet]
         public ActionResult Index(string projectName)
@@ -16,17 +22,16 @@ namespace Issues_Tracker.Controllers
 
             if (!string.IsNullOrEmpty(projectName))
             {
-                project = db.Projects.FirstOrDefault(p => p.Name == projectName);
+                project = _context.Projects.FirstOrDefault(p => p.Name == projectName);
             }
             else
             {
                 project = new Project();
             }
 
-            SelectList listOfProjects = new SelectList(db.Projects.Select(p => p.Name));
+            SelectList listOfProjects = new SelectList(_context.Projects.Select(p => p.Name));
             try
             {
-                listOfProjects.Count();
                 ViewBag.Projects = listOfProjects;
                 ViewBag.isNull = 1;
             }
@@ -37,23 +42,23 @@ namespace Issues_Tracker.Controllers
 
             try
             {
-                project.Issues = db.Issues.Where(i => i.Project.Name == project.Name).ToList();
+                project.Issues = _context.Issues.Find(i => i.Project.Name == project.Name).ToList();
             }
             catch (EntityException)
             {
 
             }
+
             return View(project);
         }
 
         [HttpPost]
         public ActionResult UpdateState(int issueId, int stateId)
         {
-            Issue issue = db.Issues.FirstOrDefault(i => i.Id == issueId);
+            Issue issue = _context.Issues.Get(issueId);
             issue.StateId = stateId;
-            issue.State = db.States.FirstOrDefault(s => s.Id == stateId);
-            Project project = db.Projects.FirstOrDefault(p => p.Id == issue.ProjectId);
-            db.SaveChanges();
+            Project project = _context.Projects.FirstOrDefault(p => p.Id == issue.ProjectId);
+            _context.Save();
             return RedirectToAction("Index", project.Name);
         }
     }

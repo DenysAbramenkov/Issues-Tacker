@@ -13,16 +13,16 @@
     <input type="hidden" name="UserId" value="@Model.UserId" />
 
     <h4>First Name</h4>
-    @Html.EditorFor(x => x.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+    @Html.EditorFor(x => x.FirstName, Model.FirstName , new { htmlAttributes = new { @class = "form-control" } })
 
     <h4>Last Name</h4>
-    @Html.EditorFor(x => x.LastName, new { htmlAttributes = new { @class = "form-control" } })
+    @Html.EditorFor(x => x.LastName, Model.LastName, new { htmlAttributes = new { @class = "form-control" } })
 
     <h4>Date of birthday</h4>
-    @Html.EditorFor(x => x.DateOfBirthday, new { htmlAttributes = new { @class = "form-control" } })
+    @Html.EditorFor(x => x.DateOfBirthday, Model.DateOfBirthday.ToShortDateString(), new { htmlAttributes = new {@class = "form-control" } })
 
     <h4>Phone number</h4>
-    @Html.EditorFor(x => x.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+    @Html.EditorFor(x => x.PhoneNumber, Model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
 
-    <input style="margin-top:20px" type="submit" class="btn btn-primary" value="Log in">
+    <input style="margin-top:20px" type="submit" class="btn btn-primary" value="Update my personal data">
 }
