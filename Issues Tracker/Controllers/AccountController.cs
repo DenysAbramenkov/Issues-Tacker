@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Claims;
 using System.Web;
@@ -28,13 +29,18 @@ namespace Issues_Tracker.Controllers
         public ActionResult GetUserList()
         {
             List<UserView> userList = new List<UserView>();
-            foreach (ApplicationUser user in db.Users.ToList())
+            try
             {
-                UserView u = new UserView();
-                u.User = user;
-                u.UserRoles = UserManager.GetRoles(user.Id).ToList();
-                userList.Add(u);
+                foreach (ApplicationUser user in db.Users.ToList())
+                {
+                    UserView u = new UserView();
+                    u.User = user;
+                    u.UserRoles = UserManager.GetRoles(user.Id).ToList();
+                    userList.Add(u);
+                }
             }
+            catch (SqlException)
+            { }
             return View(userList);
         }
 
@@ -50,25 +56,30 @@ namespace Issues_Tracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                ApplicationUser user = new ApplicationUser { UserName = model.Email, Email = model.Email};
-                IdentityResult result = UserManager.Create(user, model.Password);
-                if (result.Succeeded)
+                try
                 {
-                    var code = UserManager.GenerateEmailConfirmationToken(user.Id);
-                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code },
-                               protocol: Request.Url.Scheme);
-                    UserManager.SendEmail(user.Id, "Email confirmation",
-                               "To finish registrarion, folow this link:<a href=\""
-                                                       + callbackUrl + "\">Finish Registation</a>");
-                    return RedirectToAction("Login", "Account");
-                }
-                else
-                 {
-                    foreach (string error in result.Errors)
+                    ApplicationUser user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                    IdentityResult result = UserManager.Create(user, model.Password);
+                    if (result.Succeeded)
                     {
-                        ModelState.AddModelError("", error);
+                        var code = UserManager.GenerateEmailConfirmationToken(user.Id);
+                        var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code },
+                                   protocol: Request.Url.Scheme);
+                        UserManager.SendEmail(user.Id, "Email confirmation",
+                                   "To finish registrarion, folow this link:<a href=\""
+                                                           + callbackUrl + "\">Finish Registation</a>");
+                        return RedirectToAction("Login", "Account");
+                    }
+                    else
+                    {
+                        foreach (string error in result.Errors)
+                        {
+                            ModelState.AddModelError("", error);
+                        }
                     }
                 }
+                catch(SqlException)
+                { }
             }
             return View(model);
         }
@@ -76,16 +87,21 @@ namespace Issues_Tracker.Controllers
         [AllowAnonymous]
         public ActionResult ConfirmEmail(string userId, string code)
         {
-            ApplicationUser user = UserManager.FindById(userId);
-            if (user != null)
+            try
             {
-                if (user.Id == userId)
+                ApplicationUser user = UserManager.FindById(userId);
+                if (user != null)
                 {
-                    user.EmailConfirmed = true;
-                    UserManager.Update(user);
-                    return RedirectToAction("Login", "Account");
+                    if (user.Id == userId)
+                    {
+                        user.EmailConfirmed = true;
+                        UserManager.Update(user);
+                        return RedirectToAction("Login", "Account");
+                    }
                 }
             }
+            catch (SqlException)
+            { }
             return RedirectToAction("Register", "Account");
         }
 
@@ -110,24 +126,29 @@ namespace Issues_Tracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                ApplicationUser user = UserManager.Find(model.Email, model.Password);
-                if (user == null)
+                try
                 {
-                    ModelState.AddModelError("", "Incorect login or password.");
-                }
-                else
-                {
-                    ClaimsIdentity claim = UserManager.CreateIdentity(user,
-                                            DefaultAuthenticationTypes.ApplicationCookie);
-                    AuthenticationManager.SignOut();
-                    AuthenticationManager.SignIn(new AuthenticationProperties
+                    ApplicationUser user = UserManager.Find(model.Email, model.Password);
+                    if (user == null)
                     {
-                        IsPersistent = true
-                    }, claim);
-                    if (String.IsNullOrEmpty(returnUrl))
-                        return RedirectToAction("Index", "Issue");
-                    return Redirect(returnUrl);
+                        ModelState.AddModelError("", "Incorect login or password.");
+                    }
+                    else
+                    {
+                        ClaimsIdentity claim = UserManager.CreateIdentity(user,
+                                                DefaultAuthenticationTypes.ApplicationCookie);
+                        AuthenticationManager.SignOut();
+                        AuthenticationManager.SignIn(new AuthenticationProperties
+                        {
+                            IsPersistent = true
+                        }, claim);
+                        if (String.IsNullOrEmpty(returnUrl))
+                            return RedirectToAction("Index", "Issue");
+                        return Redirect(returnUrl);
+                    }
                 }
+                catch(SqlException)
+                { }
             }
             ViewBag.returnUrl = returnUrl;
             return View(model);
@@ -151,17 +172,27 @@ namespace Issues_Tracker.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult GetChangeRole(string id)
         {
-            ViewBag.Roles = new SelectList(RoleManager.Roles.ToList(), "Name", "Name");
+            try
+            {
+                ViewBag.Roles = new SelectList(RoleManager.Roles.ToList(), "Name", "Name");
+            }
+            catch (SqlException)
+            { }
             return View("ChangeRole", UserManager.FindById(id));
         }
 
         [Authorize(Roles = "Admin")]
         public ActionResult ChangeRole(string userName, string roleName)
         {
-            ApplicationUser user = UserManager.FindByName(userName);
-            var roles = UserManager.GetRoles(user.Id);
-            UserManager.RemoveFromRoles(user.Id, roles.ToArray());
-            UserManager.AddToRole(user.Id, roleName);
+            try
+            {
+                ApplicationUser user = UserManager.FindByName(userName);
+                var roles = UserManager.GetRoles(user.Id);
+                UserManager.RemoveFromRoles(user.Id, roles.ToArray());
+                UserManager.AddToRole(user.Id, roleName);
+            }
+            catch (SqlException)
+            { }
             return RedirectToAction("GetUserList");
         }
 

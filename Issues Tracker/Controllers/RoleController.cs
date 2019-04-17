@@ -3,6 +3,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -33,45 +34,62 @@ namespace Issues_Tracker.Controllers
         [HttpPost]
         public ActionResult CreateRole(CreateRoleModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                IdentityResult result = RoleManager.Create(new ApplicationRole
+                if (ModelState.IsValid)
                 {
-                    Name = model.Name,
-                    Description = model.Description
-                });
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Something goes wrong");
+                    IdentityResult result = RoleManager.Create(new ApplicationRole
+                    {
+                        Name = model.Name,
+                        Description = model.Description
+                    });
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Something goes wrong");
+                    }
                 }
             }
+            catch (SqlException)
+            { }
             return View(model);
         }
 
         public ActionResult GetEditRole(string id)
         {
-            ApplicationRole role = RoleManager.FindById(id);
+
+            ApplicationRole role = new ApplicationRole();
+            try
+            {
+                role = RoleManager.FindById(id);
+            }
+            catch (SqlException)
+            { }
             return View("EditRole", role);
         }
 
         [HttpPost]
         public ActionResult EditRole(ApplicationRole model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                ApplicationRole role = RoleManager.FindById(model.Id.ToString());
-                role.Name = model.Name;
-                role.Description = model.Description;
-                IdentityResult result = RoleManager.Update(RoleManager.FindById(model.Id));
-                if (result.Succeeded)
+                if (ModelState.IsValid)
                 {
-                    return RedirectToAction("Index");
+                    ApplicationRole role = RoleManager.FindById(model.Id.ToString());
+                    role.Name = model.Name;
+                    role.Description = model.Description;
+                    IdentityResult result = RoleManager.Update(RoleManager.FindById(model.Id));
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Index");
+                    }
                 }
             }
+            catch(SqlException)
+            { }
             return RedirectToAction("Index");
         }
     }
